@@ -1,5 +1,6 @@
 package com.tavillecode.libra.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -11,9 +12,9 @@ import org.bukkit.entity.Player;
 public class MessageSection {
     private final static String heading = "[Libra]";
     public static void EnableMessages() {
-        System.out.print("\n" + heading + " 自定义合成配方");
-        System.out.print("\n" + heading + " 作者: 凉呈哟");
-        System.out.print("\n" + heading + " 工作室: TavilleTribe\n");
+        Bukkit.getLogger().info("自定义合成配方");
+        Bukkit.getLogger().info("作者: 凉呈哟");
+        Bukkit.getLogger().info("工作室: TavilleTribe");
     }
     public static void HelpMessages(Player p) {
         p.sendMessage("§8§m                                                                            ");
