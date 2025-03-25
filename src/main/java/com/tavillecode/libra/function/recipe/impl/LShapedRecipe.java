@@ -157,6 +157,7 @@ public class LShapedRecipe extends LRecipe {
         return this.expCost;
     }
 
+    @Override
     public int getResultAmount() {
         return this.resultAmount;
     }

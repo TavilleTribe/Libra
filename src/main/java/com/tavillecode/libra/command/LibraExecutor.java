@@ -1,8 +1,9 @@
 package com.tavillecode.libra.command;
 
 import com.tavillecode.libra.Libra;
-import com.tavillecode.libra.inventory.CheckRecipeInv;
+import com.tavillecode.libra.inventory.check.CheckShapedRecipeInv;
 import com.tavillecode.libra.inventory.CreateRecipeInv;
+import com.tavillecode.libra.inventory.check.CheckShapelessRecipeInv;
 import com.tavillecode.libra.utils.MessageSection;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,9 +36,19 @@ public class LibraExecutor implements CommandExecutor {
                 } else if (parameter.equalsIgnoreCase("create")) {
                     CreateRecipeInv createRecipeInv = new CreateRecipeInv(player);
                     createRecipeInv.open();
-                } else if (parameter.equalsIgnoreCase("list")) {
-                    CheckRecipeInv checkRecipeInv = new CheckRecipeInv(player);
-                    checkRecipeInv.open();
+                }
+            } else if (args.length == 2) {
+                String parameter = args[0];
+                String parameter1 = args[1];
+                if (parameter.equalsIgnoreCase("list")) {
+                    if (parameter1.equalsIgnoreCase("shaped")) {
+                        CheckShapedRecipeInv checkRecipeInv = new CheckShapedRecipeInv(player);
+                        checkRecipeInv.open();
+                    }
+                    else if (parameter1.equalsIgnoreCase("shapeless")) {
+                        CheckShapelessRecipeInv checkShapelessRecipeInv = new CheckShapelessRecipeInv(player);
+                        checkShapelessRecipeInv.open();
+                    }
                 }
             }
         }

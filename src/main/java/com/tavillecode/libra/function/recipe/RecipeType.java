@@ -1,7 +1,7 @@
 package com.tavillecode.libra.function.recipe;
 
 public enum RecipeType {
-    SHAPED("shaped"),SHAPELESS("shapeless");
+    SHAPED("shaped"),SHAPELESS("shapeless"),MATERIAL_SHAPED("material_shaped"),MATERIAL_SHAPELESS("material_shapeless");
 
     private String name;
 

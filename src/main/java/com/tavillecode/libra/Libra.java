@@ -3,7 +3,6 @@ package com.tavillecode.libra;
 import com.tavillecode.libra.command.LibraCompleter;
 import com.tavillecode.libra.command.LibraExecutor;
 import com.tavillecode.libra.listener.PlayerCraftListener;
-import com.tavillecode.libra.listener.PlayerRightClickListener;
 import com.tavillecode.libra.storage.impl.YamlConfigurationStorage;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,7 +29,6 @@ public class Libra extends JavaPlugin {
         Objects.requireNonNull(getCommand("libra")).setTabCompleter(new LibraCompleter());
 
         getServer().getPluginManager().registerEvents(new PlayerCraftListener(),this);
-        getServer().getPluginManager().registerEvents(new PlayerRightClickListener(),this);
     }
 
     @Override

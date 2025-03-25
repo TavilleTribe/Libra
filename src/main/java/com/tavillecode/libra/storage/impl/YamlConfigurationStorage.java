@@ -2,8 +2,10 @@ package com.tavillecode.libra.storage.impl;
 
 import com.tavillecode.itemStorage.utils.ItemGetter;
 import com.tavillecode.libra.Libra;
+import com.tavillecode.libra.function.recipe.LRecipe;
 import com.tavillecode.libra.function.recipe.RecipeType;
 import com.tavillecode.libra.function.recipe.impl.LShapedRecipe;
+import com.tavillecode.libra.function.recipe.impl.LShapelessRecipe;
 import com.tavillecode.libra.storage.Storage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Interface39
@@ -74,11 +79,11 @@ public class YamlConfigurationStorage implements Storage {
 
             YamlConfiguration yml = (YamlConfiguration) reloadConfig();
             for (String key:yml.getKeys(false)) {
+                RecipeType recipeType = RecipeType.valueOf(yml.getConfigurationSection(key).getString("type"));
                 ItemStack result = ItemGetter.getItem(yml.getConfigurationSection(key).getString("result"));
                 int resultAmount = yml.getConfigurationSection(key).getInt("result_amount");
                 ItemStack blueMap = ItemGetter.getItem(yml.getConfigurationSection(key).getString("blue_map"));
                 int expCost = yml.getConfigurationSection(key).getInt("unlock_exp");
-                RecipeType recipeType = RecipeType.valueOf(yml.getConfigurationSection(key).getString("type"));
                 switch (recipeType) {
                     case SHAPED -> {
                         List<String> shape = yml.getConfigurationSection(key).getStringList("shape");
@@ -86,10 +91,17 @@ public class YamlConfigurationStorage implements Storage {
                         break;
                     }
                     case SHAPELESS -> {
-
+                        List<String> ingredients = yml.getConfigurationSection(key).getStringList("ingredients");
+                        Map<String,Integer> ingredientsMap = new HashMap<>();
+                        ingredients.forEach(s -> {
+                            String[] spliter = s.split(":");
+                            ingredientsMap.put(spliter[0],Integer.parseInt(spliter[1]));
+                        });
+                        LShapelessRecipe shapelessRecipe = new LShapelessRecipe(key,result,resultAmount,blueMap,expCost,ingredientsMap);
                         break;
                     }
                     default -> {
+
                     }
                 }
 
@@ -123,7 +135,7 @@ public class YamlConfigurationStorage implements Storage {
         }
     }
 
-    public void addRecipe(LShapedRecipe recipe) {
+    public void addRecipe(LRecipe recipe) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -132,23 +144,28 @@ public class YamlConfigurationStorage implements Storage {
                 ItemStack clone = recipe.getResult().clone();
                 clone.setAmount(1);
                 yml.createSection(key);
-                yml.getConfigurationSection(key).set("result",ItemGetter.getIdByComponent(clone.displayName()));
-                yml.getConfigurationSection(key).set("result_amount",recipe.getResultAmount());
+                Objects.requireNonNull(yml.getConfigurationSection(key)).set("type","SHAPED");
+                Objects.requireNonNull(yml.getConfigurationSection(key)).set("result",ItemGetter.getIdByComponent(clone.displayName()));
+                Objects.requireNonNull(yml.getConfigurationSection(key)).set("result_amount",recipe.getResultAmount());
                 if (recipe.getBlueMap() == null) {
-                    yml.getConfigurationSection(key).set("blue_map","空气");
+                    Objects.requireNonNull(yml.getConfigurationSection(key)).set("blue_map","空气");
                 }
                 else {
-                    yml.getConfigurationSection(key).set("blue_map",ItemGetter.getIdByComponent(recipe.getBlueMap().displayName()));
+                    Objects.requireNonNull(yml.getConfigurationSection(key)).set("blue_map",ItemGetter.getIdByComponent(recipe.getBlueMap().displayName()));
                 }
-                yml.getConfigurationSection(key).set("unlock_exp",recipe.getExpCost());
-                yml.getConfigurationSection(key).set("type","SHAPED");
-                yml.getConfigurationSection(key).set("shape",recipe.getIngredients());
+                Objects.requireNonNull(yml.getConfigurationSection(key)).set("unlock_exp",recipe.getExpCost());
+                if (recipe instanceof LShapedRecipe shaped) {
+                    Objects.requireNonNull(yml.getConfigurationSection(key)).set("shape",shaped.getIngredients());
+                }
+                else if (recipe instanceof LShapelessRecipe shapeless){
+                    Objects.requireNonNull(yml.getConfigurationSection(key)).set("ingredients",shapeless.getIngredients());
+                }
                 save();
             }
         }.runTaskAsynchronously(plugin);
     }
 
-    public void removeRecipe(LShapedRecipe recipe) {
+    public void removeRecipe(LRecipe recipe) {
         new BukkitRunnable() {
             @Override
             public void run() {

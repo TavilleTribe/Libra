@@ -18,4 +18,6 @@ public abstract class LRecipe {
     public abstract ItemStack getBlueMap();
 
     public abstract int getExpCost();
+
+    public abstract int getResultAmount();
 }

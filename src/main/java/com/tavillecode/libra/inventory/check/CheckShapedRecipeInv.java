@@ -1,4 +1,4 @@
-package com.tavillecode.libra.inventory;
+package com.tavillecode.libra.inventory.check;
 
 import com.tavillecode.centaurus.utils.builder.ItemBuilder;
 import com.tavillecode.libra.Libra;
@@ -32,7 +32,7 @@ import java.util.Objects;
  * @description: TODO
  * @date 2025/3/6 15:32
  */
-public class CheckRecipeInv {
+public class CheckShapedRecipeInv {
     private static class SimpleRecipeViewer {
         Inventory viewer;
 
@@ -64,7 +64,7 @@ public class CheckRecipeInv {
     private int maxPage;
     private int currentPage;
 
-    public CheckRecipeInv(Player player) {
+    public CheckShapedRecipeInv(Player player) {
         this.player = player;
         this.init();
         this.registerListener();
@@ -74,7 +74,7 @@ public class CheckRecipeInv {
     private void init() {
         MiniMessage mm = MiniMessage.miniMessage();
 
-        this.inventory = Bukkit.createInventory(null,54,mm.deserialize("配方列表"));
+        this.inventory = Bukkit.createInventory(null,54,mm.deserialize("配方列表 - SHAPED"));
 
         this.barrier = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
                 .setName(mm.deserialize(""))
@@ -227,7 +227,8 @@ public class CheckRecipeInv {
                                 }
                                 else if (e.isRightClick() && e.isShiftClick()) {
                                     Bukkit.removeRecipe(recipe.getNamespaceKey());
-                                    Libra.getYml().removeRecipe(recipe);                                    LShapedRecipe.GLOBAL_SHAPED_RECIPE_LIST.remove(recipe);
+                                    Libra.getYml().removeRecipe(recipe);
+                                    LShapedRecipe.GLOBAL_SHAPED_RECIPE_LIST.remove(recipe);
                                     refreshInv();
                                     player.sendMessage(MiniMessage.miniMessage().deserialize("<!i><red>删除成功!"));
                                 }
@@ -262,5 +263,5 @@ public class CheckRecipeInv {
         HandlerList.unregisterAll(this.listener);
     }
 
-    public static CheckRecipeInv cacheCheckInv;
+    public static CheckShapedRecipeInv cacheCheckInv;
 }

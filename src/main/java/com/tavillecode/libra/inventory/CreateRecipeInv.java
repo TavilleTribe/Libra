@@ -5,6 +5,7 @@ import com.tavillecode.itemStorage.utils.ItemGetter;
 import com.tavillecode.libra.Libra;
 import com.tavillecode.libra.function.recipe.RecipeType;
 import com.tavillecode.libra.function.recipe.impl.LShapedRecipe;
+import com.tavillecode.libra.function.recipe.impl.LShapelessRecipe;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -15,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,9 +26,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Interface39
@@ -210,6 +210,26 @@ public class CreateRecipeInv {
         return ingredients;
     }
 
+    private Map<ItemStack,Integer> getIngredientsMap() {
+        Map<ItemStack,Integer> ingredients = new HashMap<>();
+        ItemStack temp;
+        for (int i = 0;i < 3;i++) {
+            for (int j = 10;j <= 12;j++) {
+                temp = this.inventory.getItem(j+(i*9));
+                if (temp == null) {
+                    continue;
+                }
+                if (!ingredients.containsKey(temp)) {
+                    ingredients.put(temp,1);
+                }
+                else {
+                    ingredients.put(temp,ingredients.get(temp)+1);
+                }
+            }
+        }
+        return ingredients;
+    }
+
 
     private void save() {
         switch (setting.recipeType) {
@@ -219,7 +239,8 @@ public class CreateRecipeInv {
                 break;
             }
             case SHAPELESS -> {
-
+                LShapelessRecipe shapelessRecipe = new LShapelessRecipe(setting.recipeName,this.getResult(),this.getBlueMap(),setting.expCost,new HashMap<>(),this.getIngredientsMap());
+                Libra.getYml().addRecipe(shapelessRecipe);
                 break;
             }
         }
@@ -227,7 +248,7 @@ public class CreateRecipeInv {
 
     private void registerListener() {
         this.listener = new Listener() {
-            @EventHandler
+            @EventHandler(priority = EventPriority.MONITOR)
             public void onPlayerChat(AsyncChatEvent e) {
                 if (nameSetFlag) {
                     e.setCancelled(true);
