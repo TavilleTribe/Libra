@@ -1,15 +1,14 @@
+#magic_workbench:
+#  type: "SHAPED"
+#  result: "魔法工坊"
+#  result_amount: 2
+#  blue_map: "魔法工坊蓝图"
+#  unlock_exp: 1
+#  shape:
+#    - "加工木板|加工木板|空气"
+#    - "加工木板|加工木板|空气"
+#    - "空气|空气|空气"
 magic_workbench:
-  type: "SHAPED"
-  result: "魔法工坊"
-  result_amount: 2
-  blue_map: "魔法工坊蓝图"
-  unlock_exp: 1
-  shape:
-    - "加工木板|加工木板|空气"
-    - "加工木板|加工木板|空气"
-    - "空气|空气|空气"
-
-magic_workbench_2:
   type: "SHAPELESS"
   result: "魔法工坊"
   result_amount: 1

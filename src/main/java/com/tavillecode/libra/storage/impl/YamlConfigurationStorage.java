@@ -77,6 +77,11 @@ public class YamlConfigurationStorage implements Storage {
             }
             LShapedRecipe.GLOBAL_SHAPED_RECIPE_LIST.clear();
 
+            for (LShapelessRecipe l:LShapelessRecipe.GLOBAL_SHAPELESS_RECIPE_LIST) {
+                Bukkit.removeRecipe(l.getNamespaceKey());
+            }
+            LShapelessRecipe.GLOBAL_SHAPELESS_RECIPE_LIST.clear();
+
             YamlConfiguration yml = (YamlConfiguration) reloadConfig();
             for (String key:yml.getKeys(false)) {
                 RecipeType recipeType = RecipeType.valueOf(yml.getConfigurationSection(key).getString("type"));
